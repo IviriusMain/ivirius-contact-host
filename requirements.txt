@@ -1,0 +1,6 @@
+Flask
+Flask-Cors
+python-dotenv
+requests
+black
+Flask-Limiter
