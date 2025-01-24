@@ -2,14 +2,9 @@ from flask import (
     Flask,
     jsonify,
     request,
-    redirect,
-    render_template,
-    url_for,
-    send_file,
-    make_response,
 )
 import os
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -27,8 +22,19 @@ limiter = Limiter(
     app=app,
 )
 
-def send_webhook(url, message):
-    data = {"content": message}
+def send_webhook(url, email, subject, message):
+    data = {
+        "embeds": [
+            {
+                "title": subject,
+                "description": message,
+                "author": {
+                    "name": email,
+                },
+                "timestamp": datetime.now(timezone.utc),
+            }
+        ]
+    }
     requests.post(url, json=data)
 
 @app.route("/contact", methods=["POST"])
@@ -46,7 +52,9 @@ def contact():
     try:
         send_webhook(
             WEBHOOK,
-            f"# Email: `{email}`\n## Subject: `{subject}`\n## Message: ```{message}```",
+            email,
+            subject,
+            message,
         )
 
     except Exception as e:
