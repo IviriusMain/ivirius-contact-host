@@ -31,7 +31,7 @@ def send_webhook(url, email, subject, message):
                 "author": {
                     "name": email,
                 },
-                "timestamp": datetime.now(timezone.utc),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
         ]
     }
